@@ -1,0 +1,56 @@
+==============================================
+  影视搜索 - Android APK 构建指南
+==============================================
+
+项目位置: ~/h5-to-app
+
+== 前置条件 ==
+1. 安装 Android Studio (https://developer.android.com/studio)
+2. 安装 JDK 17+
+3. 配置 ANDROID_HOME 环境变量
+
+== 构建步骤 ==
+
+1. 用 Android Studio 打开项目:
+   File -> Open -> 选择 ~/h5-to-app/android 目录
+
+2. 等待 Gradle Sync 完成（首次可能需要下载依赖）
+
+3. 构建 Debug APK:
+   Build -> Build Bundle(s) / APK(s) -> Build APK(s)
+   生成路径: android/app/build/outputs/apk/debug/app-debug.apk
+
+4. 构建 Release APK (需要签名):
+   - 生成签名密钥:
+     keytool -genkey -v -keystore release-key.jks -keyalg RSA \
+       -keysize 2048 -validity 10000 -alias my-key
+   - 在 android/app/build.gradle 中添加签名配置
+   - Build -> Generate Signed Bundle / APK
+
+== 命令行构建 (需要 Android SDK) ==
+
+cd ~/h5-to-app/android
+./gradlew assembleDebug
+# APK 输出: app/build/outputs/apk/debug/app-debug.apk
+
+./gradlew assembleRelease
+# 需要先配置签名
+
+== 重新打包 (更新 H5 代码后) ==
+
+cd ~/h5-to-app
+# 1. 更新 web-assets 目录中的文件
+# 2. 同步到 Android 项目
+npx cap sync android
+# 3. 重新构建
+
+== 注意事项 ==
+- App 通过本地加载 H5 资源，API 请求发往 http://123.207.196.231:3003
+- 已配置允许 HTTP 明文请求 (cleartextTraffic)
+- 离线模式: UI 界面可正常加载，但搜索功能需要网络连接
+- 如需完全离线使用，需实现本地数据缓存策略
+
+== 应用信息 ==
+应用名: 影视搜索
+包名: com.h5app.moviesearch
+版本: 1.0
