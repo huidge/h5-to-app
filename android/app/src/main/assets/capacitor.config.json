@@ -1,0 +1,14 @@
+{
+	"appId": "com.h5app.moviesearch",
+	"appName": "影视搜索",
+	"webDir": "web-assets",
+	"server": {
+		"androidScheme": "https",
+		"allowNavigation": [
+			"http://123.207.196.231:*"
+		]
+	},
+	"android": {
+		"allowMixedContent": true
+	}
+}
