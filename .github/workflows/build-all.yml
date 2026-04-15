@@ -58,13 +58,18 @@ jobs:
       - name: Sync Capacitor
         run: npx cap sync ios
 
-      - name: Select Xcode
-        run: sudo xcode-select -s /Applications/Xcode_16.2.app/Contents/Developer
+      - name: List available Xcode versions
+        run: ls /Applications/ | grep Xcode
+
+      - name: List available schemes
+        run: |
+          cd ios/App
+          xcodebuild -project App.xcodeproj -list
 
       - name: Build iOS (Simulator)
         run: |
           cd ios/App
-          xcodebuild -workspace App.xcworkspace \
+          xcodebuild -project App.xcodeproj \
             -scheme App \
             -configuration Debug \
             -destination 'generic/platform=iOS Simulator' \
