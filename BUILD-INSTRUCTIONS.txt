@@ -1,18 +1,19 @@
 ==============================================
-  影视搜索 - Android APK 构建指南
+  影视搜索 - Android/iOS 构建指南
 ==============================================
 
-项目位置: ~/h5-to-app
+项目位置: ~/code/h5-to-app
 
 == 前置条件 ==
 1. 安装 Android Studio (https://developer.android.com/studio)
-2. 安装 JDK 17+
+2. 安装 JDK 17+ (Capacitor 8 推荐 JDK 21)
 3. 配置 ANDROID_HOME 环境变量
+4. iOS 构建需要 macOS + 完整 Xcode (非仅 Command Line Tools)
 
-== 构建步骤 ==
+== Android 构建 ==
 
 1. 用 Android Studio 打开项目:
-   File -> Open -> 选择 ~/h5-to-app/android 目录
+   File -> Open -> 选择 ~/code/h5-to-app/android 目录
 
 2. 等待 Gradle Sync 完成（首次可能需要下载依赖）
 
@@ -27,30 +28,58 @@
    - 在 android/app/build.gradle 中添加签名配置
    - Build -> Generate Signed Bundle / APK
 
-== 命令行构建 (需要 Android SDK) ==
+== iOS 构建 ==
 
-cd ~/h5-to-app/android
+1. 安装完整 Xcode (从 App Store)
+   注意: 仅有 Command Line Tools 不够，需要完整 Xcode 应用
+
+2. 安装 CocoaPods (如需要):
+   sudo gem install cocoapods
+
+3. 用 Xcode 打开项目:
+   open ios/App/App.xcworkspace
+   或 File -> Open -> 选择 ios/App/App.xcodeproj
+
+4. 配置签名:
+   - 选择项目 -> Signing & Capabilities
+   - 选择 Team (需要 Apple Developer 账号)
+   - Bundle Identifier: com.h5app.moviesearch
+
+5. 构建:
+   - 选择模拟器或真机
+   - Product -> Build (Cmd+B)
+   - Product -> Archive (用于发布)
+
+== 命令行构建 (需要相应 SDK) ==
+
+Android:
+cd ~/code/h5-to-app/android
 ./gradlew assembleDebug
 # APK 输出: app/build/outputs/apk/debug/app-debug.apk
 
-./gradlew assembleRelease
-# 需要先配置签名
+iOS (需要 Xcode):
+cd ~/code/h5-to-app
+npx cap open ios
+# 然后在 Xcode 中构建
 
 == 重新打包 (更新 H5 代码后) ==
 
-cd ~/h5-to-app
+cd ~/code/h5-to-app
 # 1. 更新 web-assets 目录中的文件
-# 2. 同步到 Android 项目
-npx cap sync android
+# 2. 同步到所有平台
+npx cap sync
 # 3. 重新构建
 
 == 注意事项 ==
 - App 通过本地加载 H5 资源，API 请求发往 http://123.207.196.231:3003
-- 已配置允许 HTTP 明文请求 (cleartextTraffic)
+- Android: 已配置允许 HTTP 明文请求 (cleartextTraffic)
+- iOS: 已配置 NSAllowsArbitraryLoads 允许 HTTP 请求
 - 离线模式: UI 界面可正常加载，但搜索功能需要网络连接
 - 如需完全离线使用，需实现本地数据缓存策略
+- iOS 需要 Apple Developer 账号才能在真机上运行和发布
 
 == 应用信息 ==
 应用名: 影视搜索
 包名: com.h5app.moviesearch
 版本: 1.0
+平台: Android + iOS

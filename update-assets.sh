@@ -17,7 +17,9 @@ CSS_FILE=$(grep -oE 'href="/assets/[^"]+' "$DIR/index.html" | sed 's/href="//')
 [ -n "$CSS_FILE" ] && curl -s "$BASE_URL$CSS_FILE" -o "$DIR$CSS_FILE"
 
 echo ">>> 资源下载完成"
-echo ">>> 同步到 Android 项目..."
-cd "$DIR/.." && npx cap sync android
+echo ">>> 同步到 Android 和 iOS 项目..."
+cd "$DIR/.." && npx cap sync
 
-echo ">>> 完成! 现在可以在 Android Studio 中重新构建 APK"
+echo ">>> 完成! 现在可以重新构建:"
+echo "    Android: Android Studio 或 cd android && ./gradlew assembleDebug"
+echo "    iOS: Xcode (open ios/App/App.xcworkspace)"
